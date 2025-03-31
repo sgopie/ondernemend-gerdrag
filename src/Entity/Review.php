@@ -22,8 +22,8 @@ class Review
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $category = null;
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -66,15 +66,16 @@ class Review
         return $this;
     }
 
-    public function getCategory(): ?string
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?Category $category): static
     {
         $this->category = $category;
 
         return $this;
     }
+
 }
