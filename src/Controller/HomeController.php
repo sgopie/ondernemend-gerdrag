@@ -14,11 +14,24 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/')]
 final class HomeController extends AbstractController
 {
-    #[Route(name: 'app_home_index', methods: ['GET'])]
-    public function index(ReviewRepository $reviewRepository): Response
+    #[Route(name: 'app_home_index', methods: ['GET', 'POST'])]
+    public function index(Request $request, ReviewRepository $reviewRepository, EntityManagerInterface $entityManager): Response
     {
+        $review = new Review();
+        $form = $this->createForm(ReviewType::class, $review);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($review);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Your review has been submitted successfully!');
+            return $this->redirectToRoute('app_home_index');
+        }
+
         return $this->render('home/index.html.twig', [
             'reviews' => $reviewRepository->findAll(),
+            'form' => $form,
         ]);
     }
 
@@ -74,6 +87,9 @@ final class HomeController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$review->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($review);
             $entityManager->flush();
+            $this->addFlash('success', 'Review has been deleted successfully.');
+        } else {
+            $this->addFlash('error', 'Invalid security token. Please try again.');
         }
 
         return $this->redirectToRoute('app_home_index', [], Response::HTTP_SEE_OTHER);

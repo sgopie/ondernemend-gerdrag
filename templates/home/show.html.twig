@@ -1,38 +1,150 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Review{% endblock %}
+{% block title %}Review Details{% endblock %}
 
 {% block body %}
-    <h1>Review</h1>
+<div class="review-page">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 fw-bold mb-3">Review Details</h1>
+                    <p class="lead text-muted">Review by {{ review.firstName }} {{ review.lastName }}</p>
+                </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ review.id }}</td>
-            </tr>
-            <tr>
-                <th>FirstName</th>
-                <td>{{ review.firstName }}</td>
-            </tr>
-            <tr>
-                <th>LastName</th>
-                <td>{{ review.lastName }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ review.description }}</td>
-            </tr>
-            <tr>
-                <th>Category</th>
-                <td>{{ review.category }}</td>
-            </tr>
-        </tbody>
-    </table>
+                <!-- Review Details -->
+                <div class="review-card mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">{{ review.firstName }} {{ review.lastName }}</h5>
+                                    <span class="badge bg-primary">{{ review.category }}</span>
+                                </div>
+                                <div>
+                                    <small class="text-muted me-3">ID: {{ review.id }}</small>
+                                    <a href="{{ path('app_home_edit', {'id': review.id}) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        Delete
+                                    </button>
+                                    <a href="{{ path('app_home_index') }}" class="btn btn-sm btn-outline-secondary">Back to List</a>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <p class="card-text mb-0">{{ review.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <a href="{{ path('app_home_index') }}">back to list</a>
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ path('app_home_edit', {'id': review.id}) }}" class="btn btn-primary btn-lg">Edit Review</a>
+                    <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        Delete Review
+                    </button>
+                    <a href="{{ path('app_home_index') }}" class="btn btn-outline-secondary btn-lg">Back to Reviews</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <a href="{{ path('app_home_edit', {'id': review.id}) }}">edit</a>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-exclamation-triangle text-warning display-4 mb-3"></i>
+                <p class="mb-0">Are you sure you want to delete this review?</p>
+                <p class="text-muted small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{{ path('app_home_delete', {'id': review.id}) }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-    {{ include('home/_delete_form.html.twig') }}
+{% block stylesheets %}
+<style>
+    .review-page {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .review-card {
+        transition: transform 0.2s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-primary, .btn-outline-secondary, .btn-danger {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card {
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .badge {
+        padding: 0.5em 1em;
+        font-weight: 500;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .review-content {
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .modal-content {
+        border-radius: 1rem;
+        border: none;
+    }
+
+    .modal-header {
+        padding: 1.5rem;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-footer {
+        padding: 1.5rem;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        opacity: 0.5;
+        transition: opacity 0.2s ease;
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+</style>
 {% endblock %}

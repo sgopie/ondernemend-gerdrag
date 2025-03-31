@@ -1,41 +1,154 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Review index{% endblock %}
+{% block title %}Reviews{% endblock %}
 
 {% block body %}
-    <h1>Review index</h1>
+<div class="review-page">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 fw-bold mb-3">Customer Reviews</h1>
+                    <p class="lead text-muted">Share your experience with us</p>
+                </div>
+                
+                <!-- Review Form -->
+                <div class="review-form-wrapper mb-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Write Your Review</h5>
+                            {{ form_start(form, {'attr': {'class': 'review-form'}}) }}
+                                <div class="mb-4">
+                                    {{ form_label(form.firstName, 'First Name', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.firstName, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Enter your first name'}}) }}
+                                    {{ form_errors(form.firstName) }}
+                                </div>
+                                <div class="mb-4">
+                                    {{ form_label(form.lastName, 'Last Name', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.lastName, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Enter your last name'}}) }}
+                                    {{ form_errors(form.lastName) }}
+                                </div>
+                                <div class="mb-4">
+                                    {{ form_label(form.category, 'Category', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.category, {'attr': {'class': 'form-select form-select-lg'}}) }}
+                                    {{ form_errors(form.category) }}
+                                </div>
+                                <div class="mb-4">
+                                    {{ form_label(form.description, 'Your Review', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.description, {'attr': {'class': 'form-control form-control-lg', 'rows': '4', 'placeholder': 'Tell us about your experience...'}}) }}
+                                    {{ form_errors(form.description) }}
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg w-100">Submit Review</button>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>FirstName</th>
-                <th>LastName</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for review in reviews %}
-            <tr>
-                <td>{{ review.id }}</td>
-                <td>{{ review.firstName }}</td>
-                <td>{{ review.lastName }}</td>
-                <td>{{ review.description }}</td>
-                <td>{{ review.category }}</td>
-                <td>
-                    <a href="{{ path('app_home_show', {'id': review.id}) }}">show</a>
-                    <a href="{{ path('app_home_edit', {'id': review.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                <!-- Reviews List -->
+                <div class="reviews-list">
+                    <h2 class="h3 mb-4">Recent Reviews</h2>
+                    {% for review in reviews %}
+                    <div class="review-card mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h5 class="card-title mb-1">{{ review.firstName }} {{ review.lastName }}</h5>
+                                        <span class="badge bg-primary">{{ review.category }}</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted me-3">ID: {{ review.id }}</small>
+                                        <a href="{{ path('app_home_show', {'id': review.id}) }}" class="btn btn-sm btn-outline-primary me-2">View</a>
+                                        <a href="{{ path('app_home_edit', {'id': review.id}) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    </div>
+                                </div>
+                                <p class="card-text mb-0">{{ review.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-chat-dots display-1 text-muted mb-3"></i>
+                        <p class="lead text-muted">No reviews yet. Be the first to share your experience!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-    <a href="{{ path('app_home_new') }}">Create new</a>
+{% block stylesheets %}
+<style>
+    .review-page {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .review-form-wrapper {
+        position: relative;
+    }
+
+    .review-form-wrapper::before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .review-card {
+        transition: transform 0.2s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        border: 1px solid #dee2e6;
+        padding: 0.75rem 1rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+
+    .btn-primary {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card {
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .badge {
+        padding: 0.5em 1em;
+        font-weight: 500;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .form-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
 {% endblock %}

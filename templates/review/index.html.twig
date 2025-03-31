@@ -3,69 +3,83 @@
 {% block title %}Reviews{% endblock %}
 
 {% block body %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <h1 class="mb-4">Product Reviews</h1>
-            
-            <!-- Review Form -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Write a Review</h5>
-                    <form action="{{ path('app_review_create') }}" method="post">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Your Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="rating" class="form-label">Rating</label>
-                            <div class="rating">
-                                <input type="radio" name="rating" value="5" id="star5" required>
-                                <label for="star5"><i class="bi bi-star-fill"></i></label>
-                                <input type="radio" name="rating" value="4" id="star4">
-                                <label for="star4"><i class="bi bi-star-fill"></i></label>
-                                <input type="radio" name="rating" value="3" id="star3">
-                                <label for="star3"><i class="bi bi-star-fill"></i></label>
-                                <input type="radio" name="rating" value="2" id="star2">
-                                <label for="star2"><i class="bi bi-star-fill"></i></label>
-                                <input type="radio" name="rating" value="1" id="star1">
-                                <label for="star1"><i class="bi bi-star-fill"></i></label>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="review" class="form-label">Your Review</label>
-                            <textarea class="form-control" id="review" name="review" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit Review</button>
-                    </form>
+<div class="review-page">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 fw-bold mb-3">Customer Reviews</h1>
+                    <p class="lead text-muted">Share your experience with us</p>
                 </div>
-            </div>
-
-            <!-- Reviews List -->
-            <div class="reviews-list">
-                <h2 class="mb-4">Recent Reviews</h2>
-                {% for review in reviews %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title mb-0">{{ review.name }}</h5>
-                            <div class="rating-display">
-                                {% for i in 1..5 %}
-                                    {% if i <= review.rating %}
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    {% else %}
-                                        <i class="bi bi-star text-warning"></i>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
+                
+                <!-- Review Form -->
+                <div class="review-form-wrapper mb-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Write Your Review</h5>
+                            <form action="{{ path('app_review_create') }}" method="post" class="review-form">
+                                <div class="mb-4">
+                                    <label for="name" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control form-control-lg" id="name" name="name" required placeholder="Enter your name">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Your Rating</label>
+                                    <div class="rating">
+                                        <input type="radio" name="rating" value="5" id="star5" required>
+                                        <label for="star5"><i class="bi bi-star-fill"></i></label>
+                                        <input type="radio" name="rating" value="4" id="star4">
+                                        <label for="star4"><i class="bi bi-star-fill"></i></label>
+                                        <input type="radio" name="rating" value="3" id="star3">
+                                        <label for="star3"><i class="bi bi-star-fill"></i></label>
+                                        <input type="radio" name="rating" value="2" id="star2">
+                                        <label for="star2"><i class="bi bi-star-fill"></i></label>
+                                        <input type="radio" name="rating" value="1" id="star1">
+                                        <label for="star1"><i class="bi bi-star-fill"></i></label>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="review" class="form-label">Your Review</label>
+                                    <textarea class="form-control form-control-lg" id="review" name="review" rows="4" required placeholder="Tell us about your experience..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg w-100">Submit Review</button>
+                            </form>
                         </div>
-                        <p class="card-text">{{ review.content }}</p>
-                        <small class="text-muted">{{ review.createdAt|date('F j, Y') }}</small>
                     </div>
                 </div>
-                {% else %}
-                <p class="text-center">No reviews yet. Be the first to review!</p>
-                {% endfor %}
+
+                <!-- Reviews List -->
+                <div class="reviews-list">
+                    <h2 class="h3 mb-4">Recent Reviews</h2>
+                    {% for review in reviews %}
+                    <div class="review-card mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h5 class="card-title mb-1">{{ review.name }}</h5>
+                                        <div class="rating-display">
+                                            {% for i in 1..5 %}
+                                                {% if i <= review.rating %}
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                {% else %}
+                                                    <i class="bi bi-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">{{ review.createdAt|date('F j, Y') }}</small>
+                                </div>
+                                <p class="card-text mb-0">{{ review.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-chat-dots display-1 text-muted mb-3"></i>
+                        <p class="lead text-muted">No reviews yet. Be the first to share your experience!</p>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
@@ -74,10 +88,33 @@
 
 {% block stylesheets %}
 <style>
+    .review-page {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .review-form-wrapper {
+        position: relative;
+    }
+
+    .review-form-wrapper::before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
     .rating {
         display: flex;
         flex-direction: row-reverse;
         justify-content: flex-end;
+        gap: 0.5rem;
     }
 
     .rating input {
@@ -86,19 +123,51 @@
 
     .rating label {
         cursor: pointer;
-        font-size: 1.5rem;
+        font-size: 2rem;
         color: #ddd;
-        padding: 0 0.1rem;
+        transition: color 0.2s ease;
     }
 
     .rating input:checked ~ label,
     .rating label:hover,
     .rating label:hover ~ label {
-        color: #ffd700;
+        color: #ffc107;
     }
 
     .rating-display {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+    }
+
+    .review-card {
+        transition: transform 0.2s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .form-control {
+        border-radius: 0.5rem;
+        border: 1px solid #dee2e6;
+        padding: 0.75rem 1rem;
+    }
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+
+    .btn-primary {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card {
+        border-radius: 1rem;
+        overflow: hidden;
     }
 </style>
 {% endblock %} 
